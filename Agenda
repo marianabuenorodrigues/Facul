@@ -1,0 +1,175 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 10
+
+typedef struct Lagenda{ 																		//inicializando a estrutura dos dados da agenda
+	char nome[50];
+	char endereco[50];
+	char telefone[10];
+	int fim;
+} ListaAgenda;
+
+typedef struct LContato{																		 //inicializando a estrutura onde a agenda armazenará os dados
+	ListaAgenda elementos[MAX];
+	int fim;
+}PContato;
+
+
+void cadastro (PContato *novo){ 																//função que realiza a leitura de novos contatos na agenda
+	int retorno;
+	char aux[50];
+																	
+	novo->fim = novo->fim + 1;																    //contador da lista, aqui contabiliza quantos contatos estão sendo cadastarados e qual a posição de cada um deles
+		if(novo->fim <= MAX-2){ 																//verifica se há espaço disponível na agenda para cadastrar um novo contato 
+			printf("\n\t Informe o nome do novo contato:");										//leitura dos dados da agenda
+			fflush(stdin);
+			gets (novo->elementos[novo->fim].nome);
+	
+			printf("\n\t Informe o endereco do novo contato: ");
+			fflush(stdin);
+			gets (novo->elementos[novo->fim].endereco);
+			
+			printf("\n\t Informe o telefone do novo contato: ");
+	 		fflush(stdin);
+			gets (novo->elementos[novo->fim].telefone);
+		} 
+		else
+			printf("\n\nAgenda cheia!");
+		
+		for(int i =novo->fim; i > 0; i--){														//laço para colocar em ordem alfabética
+			retorno = strcmp(novo->elementos[i].nome,novo->elementos[i-1].nome);				//compara o nome digitado com a posição anterior
+				if (retorno > 0){																//verifica se o nome atual é maior que o anterior
+				strcpy(aux,novo->elementos[i].nome);											//troca todas as informações para a posição correta
+				strcpy(novo->elementos[i].nome,novo->elementos[i-1].nome);
+				strcpy(novo->elementos[i-1].nome, aux);
+				
+				strcpy(aux,novo->elementos[i].endereco);
+				strcpy(novo->elementos[i].endereco,novo->elementos[i-1].endereco);
+				strcpy(novo->elementos[i-1].endereco, aux);
+				
+				strcpy(aux,novo->elementos[i].telefone);
+				strcpy(novo->elementos[i].telefone,novo->elementos[i-1].telefone);
+				strcpy(novo->elementos[i-1].telefone, aux);					
+			}
+		}
+}
+
+void remover_por_posicao (PContato *novo){
+	int posicao;
+	printf("\n\t\tInforme qual posicao, entre 0 e %d deseja remover:  ",novo->fim); 
+	scanf("%d",&posicao);																		//lendo a posição do contato que será excluído
+	if (posicao >= 0 && posicao <= novo->fim){															   				//verifica se a posição é maior que 0 e menor que o fim da lista para fazer a remoção
+		for(int i = posicao; i < novo->fim; i++){								  				//roda a lista a partir da posição informada até o fim
+			strcpy(novo->elementos[i].nome,novo->elementos[i+1].nome);							//faz as informações da posição posterior passar para a anterior
+			strcpy(novo->elementos[i].endereco,novo->elementos[i+1].endereco);
+			strcpy(novo->elementos[i].telefone,novo->elementos[i+1].telefone);					//transfere o valor da próxima posição para a posição atual
+													 											//exclui a ultima posição da lista para não duplicar
+		}
+	novo->fim = novo->fim - 1;
+	printf("\n\t\tContato removido com sucesso!\n");
+	}
+	else 
+		printf("\n\t\tPosicao invalida!\n");
+
+}
+
+void remover_por_nome (PContato *novo){
+	char busca[50];
+	char compara;
+	int p;
+	printf("\n\t\tInforme o nome que deseja remover da agenda: ");
+	fflush(stdin);		
+	gets (busca);																				//lendo o nome que quer excluir
+	
+	for(int i = novo->fim; i>= 0; i--){															//looping para buscar o nome digitado que será excluído
+		compara = strcmp(novo->elementos[i].nome,busca);										//compara se o nome digitado é igual ao nome na posição do looping
+		if(compara == 0){																		//confirma que o nome existe na lista
+			for (int j = i; j <= novo->fim; j++){												
+				strcpy(novo->elementos[j].nome,novo->elementos[j+1].nome);						//faz as informações da posição posterior passar para a anterior
+				strcpy(novo->elementos[j].endereco,novo->elementos[j+1].endereco);
+				strcpy(novo->elementos[j].telefone,novo->elementos[j+1].telefone);
+			}
+			novo->fim = novo->fim - 1;															//diminui o tamanho da pilha para excluir o item
+		}
+		else
+			if(compara!= 0)
+			printf("\n\t\tContato nao cadastrado!\n\n");	
+	}
+}
+	
+
+void imprimir (PContato imp){
+	system("color 6");
+	printf("\n* * * * * * * LISTA DE CONTATOS * * * * * * * \n");
+	for(int i = imp.fim; i >= 0; i--){
+		printf("CONTATO %d ",i);
+		printf("\n\t Nome: %s",imp.elementos[i].nome);
+		printf("\n\t Endereco: %s",imp.elementos[i].endereco);
+		printf("\n\t Telefone: %s\n",imp.elementos[i].telefone);
+		printf("________________________________________________\n\n");
+	}	
+}
+
+void cabecalho(){
+	system("cls");
+	system("color 3");
+	printf("\n\t\t * * * * * MINHA AGENDA * * * * * ");
+	printf("\n\t\t|O que quer fazer?\t\t |");
+	printf("\n\t\t|\t\t\t\t |");
+	printf("\n\t\t|1 - CADASTRAR NOVO CONTATO.\t |");
+	printf("\n\t\t|\t\t\t\t |");
+	printf("\n\t\t|2 - REMOVER CONTATO POR POSICAO.| ");
+	printf("\n\t\t|\t\t\t\t |");
+	printf("\n\t\t|3 - REMOVER CONTATO POR NOME.   |");
+	printf("\n\t\t|\t\t\t\t |");
+	printf("\n\t\t|4 - IMPRIMIR LISTA DE CONTATOS. |");
+	printf("\n\t\t|\t\t\t\t |");
+	printf("\n\t\t|5 - SAIR \t\t\t |");
+	printf("\n\t\t|________________________________|\n");
+	printf("\n\t\t");
+}
+
+int main(int argc, char *argv[]) {
+	PContato agenda;
+	int op;
+	
+	agenda.fim = -1;																		//Inicializando a lista(pilha?)
+	do{
+	
+	cabecalho();
+	scanf("%d",&op);																		//leitura do que o usuário quer fazer
+	
+	switch (op){																			
+		case 1:
+			system("cls");
+			cadastro(&agenda);
+			break;	
+		
+		case 2:
+			system("cls");
+			remover_por_posicao(&agenda);
+			system("pause");
+			break;
+		
+		case 3:
+			system("cls");
+			remover_por_nome(&agenda);
+			system("pause");
+			break;
+			
+		case 4:
+			system("cls");
+			imprimir(agenda);
+			system("pause");
+			break;
+		
+		default:
+			system("cls");
+			printf("\n\t\tOpcao Invalida!");
+	}
+	}while (op != 5);
+	
+return 0;
+
+}
