@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+int main(int argc, char *argv[]) {
+	FILE *arquivo;
+	char texto[140]="Trabalho LP de Mariana Bueno Rodrigues\n Aluna em: FATEC Ribeirao Preto \n Segundo Ciclo\n Turno: Noturno";
+	int op;
+	
+	arquivo = fopen("texto.txt","w");
+	for(int i = 0; strlen(texto) ; i++)
+		fputc(texto[i],arquivo);
+		
+	fclose(arquivo);
+	
+	
+	printf("* * * * * * ATIVIDADE CRIPTOGRAFIA * * * * * * ");
+
+
+	do {
+	system("cls");
+	printf("\n\n\n  Digite o numero conforme o que deseja fazer: ");
+	printf("\n\t 1 - Criptografar texto");
+	printf("\n\t 2 - Descriptografar texto");
+	printf("\n\t 3 - Mostrar texto");
+	printf("\n\t 9 - Sair\n\n");
+	scanf("%d",&op);
+	
+	switch(op){
+		case 1:
+			arquivo = fopen("texto.txt","w");
+			if(arquivo == NULL){
+				printf("\nProblema ao abrir o arquivo.");
+			return 0;
+			}
+			
+			for (int i = 0; i<strlen(texto); i++)
+				texto[i] = texto[i]-3;
+	
+			for (int i = 0; i<strlen(texto); i++)
+				fputc(texto[i],arquivo);
+			fclose(arquivo);
+		break;
+	
+		case 2:
+			arquivo = fopen("texto.txt","r");
+			if(arquivo == NULL){
+				printf("\nProblema ao abrir o arquivo.");
+			return 0;
+			}
+			for (int j = 0; fgets(texto,140,arquivo) !=NULL; j++){
+				for (int i = 0; i<strlen(texto); i++)
+					texto[i] = texto[j]+3;
+			}
+			fclose(arquivo);
+			
+			arquivo = fopen("texto.txt","w");
+			if(arquivo == NULL){
+				printf("\nProblema ao abrir o arquivo.");
+			return 0;
+			}
+			
+			fputs(texto,arquivo);
+			fclose(arquivo);
+		break;
+		
+		case 3:
+			arquivo = fopen("texto.txt","r");
+			if(arquivo == NULL){
+				printf("\nProblema ao abrir o arquivo.");
+			return 0;
+			}
+			while(fgets(texto,140,arquivo) != NULL){
+				printf("%s\n",texto);
+			}
+			system("pause");
+		break;
+		
+		default:
+			printf("\nOpcao invalida!");
+		break;
+	}
+}while(op != 9);
+	
+	
+	return 0;
+}
