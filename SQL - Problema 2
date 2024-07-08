@@ -1,14 +1,1 @@
-SELECT *
-    FROM products;
 
-UPDATE produts
-    SET price = 20.0
-    WHERE type = 'A';
-    
-UPDATE produts
-    SET price = 70.0
-    WHERE type = 'B';
-
-UPDATE produts
-    SET price = 530.5
-    WHERE type = 'C';
